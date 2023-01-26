@@ -7,8 +7,8 @@
     {% for conference in conferences %}
         <h4>{{ conference }}</h4>
         <p>
-            <a href="/conference/{{ conference.id }}">View Hard coded link</a> 
-            <a href="{{ path('conference', { id: conference.id }) }}">View link using route name</a>
+            <!-- <a href="/conference/{{ conference.id }}">View Hard coded link</a> -->
+            <a href="{{ path('conference', { slug: conference.slug }) }}">View link using route name</a>
         </p>
     {% endfor %}
 {% endblock %}
