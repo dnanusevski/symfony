@@ -26,6 +26,10 @@ class SpamChecker
      */
     public function getSpamScore(Comment $comment, array $context): int
     {
+        sleep(5); // to imitate the long await on akismeth return.
+        return 0; // i am just goign to return 2 since akismeth is not working
+
+        /*
         $response = $this->client->request('POST', $this->endpoint, [
             'body' => array_merge($context, [
                 'blog' => 'https://guestbook.example.com',
@@ -39,6 +43,7 @@ class SpamChecker
                 'is_test' => true,
             ]),
         ]);
+        
         
         $headers = $response->getHeaders();
         
@@ -56,5 +61,6 @@ class SpamChecker
             );
         }
         return 'true' === $content ? 1 : 0;
+        */
     }
 }

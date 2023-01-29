@@ -1,0 +1,23 @@
+[33mcommit 411b8e012fd173aff3d92acb0d0b03f1c0506c56[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: dnanusevski <dnanusevski@gmail.com>
+Date:   Fri Jan 27 13:19:33 2023 +0000
+
+    Testing is done
+
+[33mcommit ef7dd2466208fc74b1336566d82893fa17656b15[m
+Author: dnanusevski <dnanusevski@gmail.com>
+Date:   Thu Jan 26 17:22:39 2023 +0000
+
+    at the admin part
+
+[33mcommit b85d1922754b14ee94e7ac387f89cce0775a1cbb[m[33m ([m[1;31morigin/sessions-in-db[m[33m, [m[1;32msessions-in-db[m[33m)[m
+Author: dnanusevski <dnanusevski@gmail.com>
+Date:   Wed Jan 25 16:45:11 2023 +0000
+
+    Confire database sessions
+
+[33mcommit 82e047bfb80fe3c543dc8140ee07fb9de3e6cbb3[m
+Author: dnanusevski <dnanusevski@gmail.com>
+Date:   Wed Jan 25 16:28:21 2023 +0000
+
+    Stage 12.2

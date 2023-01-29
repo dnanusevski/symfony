@@ -16,14 +16,19 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\SpamChecker;
 
+use App\Message\CommentMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
+
 use Doctrine\ORM\EntityManagerInterface;
 
 class ConferenceController extends AbstractController
 {
 
 
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private MessageBusInterface $bus,
+    ) {
     }
 
     #[Route('/', name: 'homepage')]
@@ -69,7 +74,17 @@ class ConferenceController extends AbstractController
 
         return $this->render('conference/index.html.twig', [
             'conferences' => $conferenceRepository->findAll(),
-        ]);
+        //]);
+        ])->setSharedMaxAge(10); // cache the page for 3 seconds 3600 for 1 hour
+    }
+
+    #[Route('/conference_header', name: 'conference_header')]
+    public function conferenceHeader(ConferenceRepository $conferenceRepository): Response
+    {
+        return $this->render('conference/header.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
+        //]);
+        ])->setSharedMaxAge(10);
     }
 
 
@@ -89,15 +104,16 @@ class ConferenceController extends AbstractController
         Request $request,
         Conference $conference,
         CommentRepository $commentRepository,
-        SpamChecker $spamChecker,
+        //SpamChecker $spamChecker,
         #[Autowire('%photo_dir%')] string $photoDir,
     ): Response {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setConference($conference);
+            $comment->setState('submitted');
 
             if ($photo = $form['photo']->getData()) {
                 $filename = bin2hex(random_bytes(6)) . '.' . $photo->guessExtension();
@@ -110,18 +126,19 @@ class ConferenceController extends AbstractController
             }
 
             $this->entityManager->persist($comment);
+            $this->entityManager->flush();
             $context = [
                 'user_ip' => $request->getClientIp(),
                 'user_agent' => $request->headers->get('user-agent'),
                 'referrer' => $request->headers->get('referer'),
                 'permalink' => $request->getUri(),
             ];
-            
-            if (2 === $spamChecker->getSpamScore($comment, $context)) {
-                throw new \RuntimeException('Blatant spam, go away!');
-            }
 
-            $this->entityManager->flush();
+            //if (2 === $spamChecker->getSpamScore($comment, $context)) {
+            //    throw new \RuntimeException('Blatant spam, go away!');
+            //}
+
+            $this->bus->dispatch(new CommentMessage($comment->getId(), $context));
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
         }
 

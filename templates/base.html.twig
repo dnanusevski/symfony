@@ -16,11 +16,16 @@
     <body>
         <header>
             <h1><a href="{{ path('homepage') }}">Guestbook</a></h1>
+            
+            <!-- in here we were loading conferences on the same page.
             <ul>
-                {% for conference in conferences %}
+                {# for conference in conferences }
                     <li><a href="{{ path('conference', { slug: conference.slug })}}">{{ conference }}</a></li>
-                {% endfor %}
+                { endfor #}
             </ul>
+            -->
+            <!-- Here we are requesting conferences from another page -->
+            {{ render_esi(path('conference_header')) }}
             <hr />
         </header>
         {% block body %}{% endblock %}
